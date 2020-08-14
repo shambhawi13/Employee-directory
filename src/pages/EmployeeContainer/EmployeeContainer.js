@@ -6,10 +6,10 @@ import data from '../../Data/employee.json';
 
 function EmployeeContainer() {
     const [sortOrder,setSortOrder] = useState({
-        name: true,
-        phone: true,
-        email: true,
-        job: true
+        firstName: true,
+        phoneNumber: true,
+        emailAddress: true,
+        jobTitle: true
     });
     const [state, dispatch] = useReducer((state, action) => {
         switch (action.type) {
@@ -25,13 +25,48 @@ function EmployeeContainer() {
                         );
                 });
             case 'sortByAsc':
-                return state;
+                //sortByAscOrder(state,action.input);
+                return sortByAscOrder(state,action.input);
             case 'sortByDes':
-                return state;               
+                //sortByDesOrder(state,action.input); 
+                return sortByDesOrder(state,action.input);          
             default:
                 return state;
         }
     }, []);
+
+    function sortByDesOrder(employees,criteria){
+        employees.sort((a, b) => {
+            let fa = a[criteria].toLowerCase(),
+                fb = b[criteria].toLowerCase();
+        
+            if (fa < fb) {
+                return -1;
+            }
+            if (fa > fb) {
+                return 1;
+            }
+            return 0;
+        });
+        return employees;
+    }
+
+    function sortByAscOrder(employees,criteria){
+        employees.sort((a, b) => {
+            let fa = a[criteria].toLowerCase(),
+                fb = b[criteria].toLowerCase();
+        
+            if (fa < fb) {
+                return 1;
+            }
+            if (fa > fb) {
+                return -1;
+            }
+            return 0;
+        });
+        console.log(employees,criteria);
+        return employees;
+    }
 
     function filterEmployees(input) {
         console.log(input);
@@ -39,22 +74,7 @@ function EmployeeContainer() {
     }
 
     function sortTableEntity(entity,sortOrderInput){
-        switch(entity){
-            case 'name':
-                setSortOrder({...sortOrder,name:!sortOrder.name});
-                break;
-            case 'phone':
-                setSortOrder({...sortOrder,phone:!sortOrder.phone});
-                break;
-            case 'email':
-                setSortOrder({...sortOrder,email:!sortOrder.email})
-                break;
-            case 'job':
-                setSortOrder({...sortOrder,job:!sortOrder.job})
-                break;
-            default:
-                break;
-        }
+        setSortOrder({...sortOrder,[entity]:!sortOrder[entity]});
         if(sortOrderInput.toLowerCase() === 'asc'){
             dispatch({ type: 'sortByAsc', input: entity });
         }
